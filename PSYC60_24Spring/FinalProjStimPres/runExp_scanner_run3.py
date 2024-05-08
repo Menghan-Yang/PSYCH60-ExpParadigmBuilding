@@ -41,12 +41,13 @@ if config_dialog.OK:
     print(config_dialog.data)
     sub_id = config_dialog.data["Subject ID: "]
     run_num = str(config_dialog.data["Run Number (RUN 3 only!): "])
+    scanner = config_dialog.data["Scanner?\n(expect triggers?): "]
 
 else:
     print('user cancelled')
     core.quit()
 
-scanner = True
+# scanner = True
 
 # Define a cleanup function to handle device closures
 def clean_up(scanner=scanner):
@@ -92,18 +93,18 @@ response_duration = 3
 fixation_duration = 3
 
 # Inputs
-fmriTrigger = "5"
+fmriTrigger = "t"
 proceedTrigger = "space"
 
 # Visuals
 textColor = "white"
 textFont = "Arial"
 textHeight = 0.15
-testWinSize = ((2460, 1600) if scanner else (1440, 900))
-# testWinSize = (1440, 900)
+# testWinSize = ((2460, 1600) if scanner else (1920,1050))
+testWinSize = (1920,1050)
   # 13" personal laptop: [1440, 900]
-expWinSize = (2460, 1600) if scanner else (1440, 900)
-# expWinSize = (1440, 900)
+# expWinSize = (2460, 1600) if scanner else (1920,1050)
+expWinSize = (1920,1050)
 alignText = "center"
 alignVert = "center"
 
@@ -118,7 +119,8 @@ clock = core.Clock()
 winSize = testWinSize
 fullScr = False
 screen = 0
-allowGUI = True
+# allowGUI = True
+allowGUI = False if scanner else True
 
 window = visual.Window(
     size=winSize, fullscr=fullScr, screen=screen, allowGUI=allowGUI, color="black"

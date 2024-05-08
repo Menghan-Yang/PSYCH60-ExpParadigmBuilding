@@ -24,7 +24,8 @@ modified based on https://github.com/wasita/psyc60-final-proj-stim-pres/blob/mai
 
 base_dir = "/Users/menghanyang/Documents/dartmouth/requirements/TA/PSYC60_24Spring/FinalProjStimPres/"  # Menghan's personal laptop
 data_dir = os.path.join(base_dir, "data")  # Where onset data comes from (.txt file)
-
+playclip_dir = os.path.join(base_dir, "Psych60_Songs","playclip.png")
+cliprating_dir = os.path.join(base_dir, "Psych60_Songs","cliprating.png")
 
 ### DIALOGUE SCREENS AND DATA FILE ###
 # Basic info
@@ -40,12 +41,13 @@ if config_dialog.OK:
     print(config_dialog.data)
     sub_id = config_dialog.data["Subject ID: "]
     run_num = str(config_dialog.data["Run Number: "])
+    scanner = config_dialog.data["Scanner?\n(expect triggers?): "]
 
 else:
     print('user cancelled')
     core.quit()
 
-scanner = True
+# scanner = True
 
 # Define a cleanup function to handle device closures
 def clean_up(scanner=scanner):
@@ -129,18 +131,16 @@ response_duration = 3
 fixation_duration = 3
 
 # Inputs
-fmriTrigger = "5"
+fmriTrigger = "t"
 proceedTrigger = "space"
 
 # Visuals
 textColor = "white"
 textFont = "Arial"
 textHeight = 0.15
-testWinSize = ((2460, 1600) if scanner else (1440, 900))
-# testWinSize = (1440, 900)
+# testWinSize = ((2460, 1600) if scanner else (1920,1050))
+testWinSize = (1920,1050)
   # 13" personal laptop: [1440, 900]
-expWinSize = (2460, 1600) if scanner else (1440, 900)
-# expWinSize = (1440, 900)
 alignText = "center"
 alignVert = "center"
 
@@ -155,7 +155,8 @@ clock = core.Clock()
 winSize = testWinSize
 fullScr = False
 screen = 0
-allowGUI = True
+allowGUI = False if scanner else True
+# allowGUI = False
 
 window = visual.Window(
     size=winSize, fullscr=fullScr, screen=screen, allowGUI=allowGUI, color="black"
@@ -211,22 +212,16 @@ def draw_fixation():
     fixation.draw()
     window.flip()
 
-# def present_ITI(window, jitter):
-#     mouse.setPos([0, 0])
-#     fixation.pos = mouse.getPos()
-
-#     fixation.draw()
-#     window.flip()
-#     core.wait(jitter)
-#     window.flip()
-
 
 ### RUN EXPERIMENT ###
 # Run 1: fixation --> music --> ratings --> fixation
 # Run 2: fixation --> music --> ratings --> fixation
 # Run 3: fixation --> comedy --> ratings --> fixation ## seperate
 ### adding jitters bettwen music and ratings
-fixation_sound = visual.TextStim(win=window, text="Playing the clip", color=textColor, font=textFont, pos=(0, 0), height=textHeight, alignHoriz=alignText)
+# fixation_sound = visual.TextStim(win=window, text="Playing the clip", color=textColor, font=textFont, pos=(0, 0), height=textHeight, alignHoriz=alignText)
+playclip = visual.ImageStim(window, image=playclip_dir)
+cliprating = visual.ImageStim(window, image=cliprating_dir)
+
 
 
 if int(run_num) <= n_runs:
@@ -297,7 +292,8 @@ if int(run_num) <= n_runs:
 
         music_onset = clock.getTime() - fmriStart
         stim_vid_path = os.path.join(base_dir,"Psych60_Songs",audio_file)
-        fixation_sound.draw()
+        
+        playclip.draw()
         window.flip()
         sound_clip = sound.Sound(stim_vid_path)
         sound_clip.play()
@@ -310,8 +306,7 @@ if int(run_num) <= n_runs:
      # Jittered interval between clips
 
         # Prompt for participant rating
-        rating_prompt = visual.TextStim(window, text='How much do you like this music? \n\n1•••••••••2•••••••••3•••••••••4•••••••••5 \n\nleast                                     most', pos=(0, 0))
-        rating_prompt.draw()
+        cliprating.draw()
         window.flip()
 
         # Wait for participant rating for a maximum of 3 seconds
@@ -356,7 +351,7 @@ if int(run_num) <= n_runs:
 
     # Post-video fixation
     ending_text = (
-        f"You complete Run {run_num} out of {n_runs} Total Runs"
+        f"You completed Run {run_num} out of {n_runs} Total Runs"
     )
     ending = visual.TextStim(
             win=window,
