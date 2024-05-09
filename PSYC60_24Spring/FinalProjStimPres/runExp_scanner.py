@@ -363,8 +363,9 @@ if int(run_num) <= n_runs:
             alignHoriz=alignText,
         )
     ending.draw()
-    core.wait(init_wait)
     window.flip()
+    core.wait(init_wait)
+    
 
     fmriEnd = clock.getTime()  # Start the clock
     scantime = fmriEnd-fmriStart

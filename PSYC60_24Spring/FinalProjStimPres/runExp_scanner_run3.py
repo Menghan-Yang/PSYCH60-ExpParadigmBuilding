@@ -184,7 +184,7 @@ time_data = [] ## all the reactions and video info
 if int(run_num) <= n_runs:
 
     instruct_text = (
-        f"You are about to complete Run {run_num} out of {n_runs} Total Runs.\n You will watch a video.\nDuring when you can press '1' when you think it is funny"
+        f"You are about to complete Run {run_num} out of {n_runs} Total Runs.\n You will watch a video.\nDuring when you can press '1'(thumb) when you think it is funny"
     )
     run_instruct(window, instruct_text, textColor, textFont, textHeight, alignText)
 
@@ -307,8 +307,9 @@ if int(run_num) <= n_runs:
             alignHoriz=alignText,
         )
     ending.draw()
-    core.wait(init_wait)
     window.flip()
+    core.wait(init_wait)
+    
 
     fmriEnd = clock.getTime()  # Start the clock
     scantime = fmriEnd-fmriStart
